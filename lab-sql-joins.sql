@@ -26,7 +26,7 @@ LEFT JOIN payment AS p ON c.customer_id = p.customer_id
 GROUP BY s.store_id;
 
 #4.  Determine the average running time of films for each category.
-SELECT c.name as 'Category', FORMAT(AVG(f.length),0) AS 'Average running time'
+SELECT c.name as 'Category', FORMAT(AVG(f.length),2) AS 'Average running time'
 FROM category as c
 LEFT JOIN film_category AS fc ON c.category_id = fc.category_id
 LEFT JOIN film as f ON fc.film_id = f.film_id
@@ -35,7 +35,7 @@ ORDER BY c.name;
 
 #**Bonus**:
 #5.  Identify the film categories with the longest average running time.
-SELECT c.name as 'Category', FORMAT(AVG(f.length),0) AS 'Higher average running time of films'
+SELECT c.name as 'Category', FORMAT(AVG(f.length),2) AS 'Higher average running time of films'
 FROM category as c
 JOIN film_category AS fc ON c.category_id = fc.category_id
 JOIN film as f ON fc.film_id = f.film_id
@@ -53,7 +53,7 @@ ORDER BY count(inv.inventory_id) DESC
 LIMIT 10;
 
 #7. Determine if "Academy Dinosaur" can be rented from Store 1.
-SELECT DISTINCT(f.title), rent.inventory_id, inv.store_id
+SELECT f.title, rent.inventory_id, inv.store_id
 FROM film f
 JOIN inventory AS inv ON f.film_id = inv.film_id
 JOIN rental AS rent ON inv.inventory_id = rent.inventory_id
@@ -63,14 +63,13 @@ WHERE f.title LIKE "Academy Dinosaur" AND inv.store_id = 1;
 #Include a column indicating whether each title is 'Available' or 'NOT available.' 
 #Note that there are 42 titles that are not in the inventory, and this information can be obtained using a `CASE` statement combined with `IFNULL`."
 
-SELECT DISTINCT(f.title),# rent.inventory_id, inv.store_id,
+SELECT DISTINCT(f.title),
 CASE
     WHEN inv.inventory_id IS NOT NULL THEN 'Available'
     ELSE 'Not available.'
 END AS 'Status'
 FROM film f
-JOIN inventory AS inv ON f.film_id = inv.film_id
-JOIN rental AS rent ON inv.inventory_id = rent.inventory_id
+LEFT JOIN inventory AS inv ON f.film_id = inv.film_id
 ORDER BY f.title;
 
 /*#Here are some tips to help you successfully complete the lab:
